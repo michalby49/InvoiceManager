@@ -1,0 +1,95 @@
+﻿@model InvoiceManager.Models.ViewModels.EditInvoiceViewModel
+
+@{
+    ViewBag.Title = "Invoice";
+}
+
+<h1 class="mb-3">Faktura</h1>
+
+@if (Model.Invoice.Id != 0)
+{
+    <button class="btn btn-primary mb-3"
+            onclick='window.location.href="@Url.Action("InvoicePosition","Home", new { invoiceId = Model.Invoice.Id})"'>
+        Dodaj pozycje
+    </button>
+    <button class="btn btn-secondary mb-3" onclick="generatePdf()">Generój Pdf</button>
+
+}
+
+<div class="row">
+    <div class="col-lg-6">
+        @using (Html.BeginForm("Invoice", "Home"))
+        {
+            if (Model.Invoice.Id == 0)
+            {
+                <p class="alert alert-info mt-4 mb-4">
+                    Pola tytuł, klient, sposób płatności i termin są
+                    <strong>wymagane</strong>
+                </p>
+
+                @Html.HiddenFor(x => x.Invoice.Id)
+                @Html.HiddenFor(x => x.Invoice.UserId)
+                @Html.HiddenFor(x => x.Invoice.CreatedDate)
+
+                <div class="form-group">
+                    @Html.LabelFor(x => x.Invoice.Title)
+                    @Html.TextBoxFor(x => x.Invoice.Title,
+                   new { @class = "form-control", autofocuse = "autofocuse" })
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(x => x.Invoice.ClientId)
+                    @Html.DropDownListFor(x => x.Invoice.ClientId,
+                   new SelectList(Model.Clients, "Id", "Name"), "-- Wybierz klienta --",
+                   new { @class = "form-control" })
+                </div>
+
+                if (Model.Invoice.Id != 0)
+                {
+                    <div class="form-group">
+                        @Html.LabelFor(x => x.Invoice.Value)
+                        @Html.TextBoxFor(x => x.Invoice.Value,
+                        new { @class = "form-control", @readonly = "readonly" })
+                    </div>
+                }
+
+                <div class="form-group">
+                    @Html.LabelFor(x => x.Invoice.MethodOfPaymantId)
+                    @Html.DropDownListFor(x => x.Invoice.MethodOfPaymantId,
+                   new SelectList(Model.MethodOfPaymants, "Id", "Name"), "-- Wybierz sposób płatoności --",
+                   new { @class = "form-control" })
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(x => x.Invoice.PaymantDate)
+                    @Html.TextBoxFor(x => x.Invoice.PaymantDate, "{0:dd-MM-yyyy}",
+                    new { @class = "form-control" })
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(x => x.Invoice.Comment)
+                    @Html.TextAreaFor(x => x.Invoice.Comment,
+                   new { @class = "form-control"})
+                </div>
+
+                <button class="btn btn-primary btn-lg mt-5" type="submit">
+                Zapisz
+                </button>
+            }
+        }
+    </div>
+    <div class="col-5 offset-lg-1">
+        @if(Model.Invoice.Id != 0)
+        {
+            @Html.Partial("_InvoicePosition", Model.Invoice.InvoicePositions)
+        }
+    </div>
+</div>
+
+
+@section Scripts
+{
+    <script type="text/javascript">
+        function generatePdf() 
+    </script>
+}
+
